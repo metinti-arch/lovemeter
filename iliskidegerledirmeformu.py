@@ -23,19 +23,21 @@ st.markdown("""
     
     .category-title {
         font-size: 24px;
-        font-weight: bold;
+        font-weight: 800;
         margin-bottom: 15px;
         padding-bottom: 10px;
         border-bottom: 2px solid;
+        color: #1f1f1f;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.08);
     }
     
-    .fiziksel .category-title { color: #8B7355; border-color: #e9dfbd; }
-    .karakter .category-title { color: #D4A017; border-color: #f3d35f; }
-    .sosyal .category-title { color: #CD7F32; border-color: #e9c09f; }
-    .statu .category-title { color: #9B59B6; border-color: #d39ad5; }
-    .degerler .category-title { color: #5B7C99; border-color: #bfc8d8; }
-    .kimya .category-title { color: #666666; border-color: #c6c6c8; }
-    .yasam .category-title { color: #7CB342; border-color: #a5c98d; }
+    .fiziksel .category-title { color: #5c4a28; border-color: #bfae7c; }
+    .karakter .category-title { color: #8a6b0c; border-color: #c9a92c; }
+    .sosyal .category-title { color: #8b4e1f; border-color: #c18a64; }
+    .statu .category-title { color: #6a2f83; border-color: #b46bc2; }
+    .degerler .category-title { color: #38506b; border-color: #8fa0b7; }
+    .kimya .category-title { color: #404040; border-color: #9a9a9a; }
+    .yasam .category-title { color: #416327; border-color: #80a35c; }
     
     .main-title {
         text-align: center;
