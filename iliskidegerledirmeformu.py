@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 
 st.set_page_config(page_title="İlişki Ölçeği", layout="wide")
 
@@ -62,11 +61,11 @@ with col1:
             score = st.number_input(
                 f"{item} (Max: {max_score})",
                 min_value=0,
-                max_value=9999,
+                max_value=max_score,  # Bu satır önemli!
                 key=f"{category}_{item}",
                 label_visibility="visible"
             )
-            st.session_state.scores[category][item] = min(score, max_score)
+            st.session_state.scores[category][item] = score
 
 with col2:
     categories_right = ["KARAKTER", "SOSYAL", "KİMYA"]
@@ -76,11 +75,11 @@ with col2:
             score = st.number_input(
                 f"{item} (Max: {max_score})",
                 min_value=0,
-                max_value=9999,
+                max_value=max_score,  # Bu satır önemli!
                 key=f"{category}_{item}",
                 label_visibility="visible"
             )
-            st.session_state.scores[category][item] = min(score, max_score)
+            st.session_state.scores[category][item] = score
 
 # Calculate totals
 st.markdown("---")
