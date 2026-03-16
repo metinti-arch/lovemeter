@@ -14,7 +14,7 @@ st.markdown("""
     }
     
     .fiziksel { border-color: #e9dfbd; background: linear-gradient(135deg, #e9dfbd 0%, rgba(233,223,189,0.1) 100%); }
-    .karakter { border-color: #f3d35f; background: linear-gradient(135deg, #f3d35f 0%, rgba(243,211,95,0.1) 100%); }
+    .karakter { border-color: #f3d35f; background: linear-gradient(135deg, #033[35m 0%, rgba(243,211,95,0.1) 100%); }
     .sosyal { border-color: #e9c09f; background: linear-gradient(135deg, #e9c09f 0%, rgba(233,192,159,0.1) 100%); }
     .statu { border-color: #d39ad5; background: linear-gradient(135deg, #d39ad5 0%, rgba(211,154,213,0.1) 100%); }
     .degerler { border-color: #bfc8d8; background: linear-gradient(135deg, #bfc8d8 0%, rgba(191,200,216,0.1) 100%); }
