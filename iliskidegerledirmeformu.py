@@ -2,6 +2,69 @@ import streamlit as st
 
 st.set_page_config(page_title="İlişki Ölçeği", layout="wide")
 
+# Custom CSS for better styling
+st.markdown("""
+    <style>
+    .category-box {
+        border: 3px solid;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 15px 0;
+        background-color: rgba(255,255,255,0.8);
+    }
+    
+    .fiziksel { border-color: #e9dfbd; background: linear-gradient(135deg, #e9dfbd 0%, rgba(233,223,189,0.1) 100%); }
+    .karakter { border-color: #f3d35f; background: linear-gradient(135deg, #f3d35f 0%, rgba(243,211,95,0.1) 100%); }
+    .sosyal { border-color: #e9c09f; background: linear-gradient(135deg, #e9c09f 0%, rgba(233,192,159,0.1) 100%); }
+    .statu { border-color: #d39ad5; background: linear-gradient(135deg, #d39ad5 0%, rgba(211,154,213,0.1) 100%); }
+    .degerler { border-color: #bfc8d8; background: linear-gradient(135deg, #bfc8d8 0%, rgba(191,200,216,0.1) 100%); }
+    .kimya { border-color: #c6c6c8; background: linear-gradient(135deg, #c6c6c8 0%, rgba(198,198,200,0.1) 100%); }
+    .yasam { border-color: #a5c98d; background: linear-gradient(135deg, #a5c98d 0%, rgba(165,201,141,0.1) 100%); }
+    
+    .category-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid;
+    }
+    
+    .fiziksel .category-title { color: #8B7355; border-color: #e9dfbd; }
+    .karakter .category-title { color: #D4A017; border-color: #f3d35f; }
+    .sosyal .category-title { color: #CD7F32; border-color: #e9c09f; }
+    .statu .category-title { color: #9B59B6; border-color: #d39ad5; }
+    .degerler .category-title { color: #5B7C99; border-color: #bfc8d8; }
+    .kimya .category-title { color: #666666; border-color: #c6c6c8; }
+    .yasam .category-title { color: #7CB342; border-color: #a5c98d; }
+    
+    .main-title {
+        text-align: center;
+        font-size: 42px;
+        font-weight: bold;
+        color: #FF1744;
+        margin-bottom: 30px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .total-container {
+        background: linear-gradient(135deg, #f0c3cb 0%, rgba(240,195,203,0.1) 100%);
+        border: 3px solid #f0c3cb;
+        border-radius: 10px;
+        padding: 25px;
+        margin: 30px 0;
+        text-align: center;
+    }
+    
+    .score-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        font-size: 16px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # Your categories data
 CATEGORY_DATA = {
     "FİZİKSEL": [
@@ -44,7 +107,17 @@ CATEGORY_COLORS = {
     "TOPLAM": "#f0c3cb",
 }
 
-st.title("İlişki Ölçeği")
+CATEGORY_CLASS = {
+    "FİZİKSEL": "fiziksel",
+    "KARAKTER": "karakter",
+    "SOSYAL": "sosyal",
+    "STATÜ": "statu",
+    "DEĞERLER": "degerler",
+    "KİMYA": "kimya",
+    "YAŞAM TARZI": "yasam",
+}
+
+st.markdown("<div class='main-title'>💕 İlişki Ölçeği 💕</div>", unsafe_allow_html=True)
 
 # Initialize session state for scores
 if "scores" not in st.session_state:
@@ -53,48 +126,83 @@ if "scores" not in st.session_state:
 # Create columns for layout
 col1, col2 = st.columns(2)
 
-with col1:
-    categories_left = ["FİZİKSEL", "DEĞERLER", "STATÜ", "YAŞAM TARZI"]
-    for category in categories_left:
-        st.markdown(f"### {category}")
+def render_category(category, col):
+    """Render a category with styling"""
+    class_name = CATEGORY_CLASS.get(category, "")
+    with col:
+        st.markdown(f"""
+            <div class='category-box {class_name}'>
+                <div class='category-title'>{category}</div>
+            </div>
+        """, unsafe_allow_html=True)
+        
         for item, max_score in CATEGORY_DATA[category]:
             score = st.number_input(
                 f"{item} (Max: {max_score})",
                 min_value=0,
-                max_value=max_score,  # Bu satır önemli!
+                max_value=max_score,
                 key=f"{category}_{item}",
                 label_visibility="visible"
             )
             st.session_state.scores[category][item] = score
+
+with col1:
+    categories_left = ["FİZİKSEL", "DEĞERLER", "STATÜ", "YAŞAM TARZI"]
+    for category in categories_left:
+        render_category(category, col1)
 
 with col2:
     categories_right = ["KARAKTER", "SOSYAL", "KİMYA"]
     for category in categories_right:
-        st.markdown(f"### {category}")
-        for item, max_score in CATEGORY_DATA[category]:
-            score = st.number_input(
-                f"{item} (Max: {max_score})",
-                min_value=0,
-                max_value=max_score,  # Bu satır önemli!
-                key=f"{category}_{item}",
-                label_visibility="visible"
-            )
-            st.session_state.scores[category][item] = score
+        render_category(category, col2)
 
 # Calculate totals
 st.markdown("---")
-st.markdown("## Toplam Puanlar")
 
 total_score = 0
 total_max = 0
 
-for category, items in CATEGORY_DATA.items():
-    cat_score = sum(st.session_state.scores[category].get(item, 0) for item, _ in items)
-    cat_max = sum(max_score for _, max_score in items)
-    total_score += cat_score
-    total_max += cat_max
-    
-    st.metric(category, f"{cat_score}/{cat_max}")
+# Category scores
+col1, col2 = st.columns(2)
+all_categories = list(CATEGORY_DATA.keys())
 
-st.markdown("---")
-st.metric("TOPLAM", f"{total_score}/{total_max}", delta=None)
+with col1:
+    st.markdown("### 📊 Kategori Puanları")
+    for category in all_categories[:4]:
+        items = CATEGORY_DATA[category]
+        cat_score = sum(st.session_state.scores[category].get(item, 0) for item, _ in items)
+        cat_max = sum(max_score for _, max_score in items)
+        total_score += cat_score
+        total_max += cat_max
+        
+        color = CATEGORY_COLORS[category]
+        st.markdown(f"""
+            <div style='background-color: {color}; padding: 10px; border-radius: 5px; margin: 8px 0;'>
+                <strong>{category}</strong>: {cat_score}/{cat_max}
+            </div>
+        """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("### 📊 Kategori Puanları")
+    for category in all_categories[4:]:
+        items = CATEGORY_DATA[category]
+        cat_score = sum(st.session_state.scores[category].get(item, 0) for item, _ in items)
+        cat_max = sum(max_score for _, max_score in items)
+        total_score += cat_score
+        total_max += cat_max
+        
+        color = CATEGORY_COLORS[category]
+        st.markdown(f"""
+            <div style='background-color: {color}; padding: 10px; border-radius: 5px; margin: 8px 0;'>
+                <strong>{category}</strong>: {cat_score}/{cat_max}
+            </div>
+        """, unsafe_allow_html=True)
+
+# Total score with special styling
+st.markdown(f"""
+    <div class='total-container'>
+        <h2 style='color: #FF1744; margin: 0;'>🏆 TOPLAM PUAN 🏆</h2>
+        <h1 style='color: #FF1744; margin: 10px 0; font-size: 48px;'>{total_score}/{total_max}</h1>
+        <p style='color: #666; margin: 0;'>Uyum Yüzdesi: <strong style='color: #FF1744; font-size: 24px;'>{round((total_score/total_max*100) if total_max > 0 else 0, 1)}%</strong></p>
+    </div>
+""", unsafe_allow_html=True)
