@@ -62,6 +62,20 @@ st.markdown("""
         padding: 8px 0;
         font-size: 16px;
     }
+    
+    .input-fiziksel input { background-color: rgba(233, 223, 189, 0.3) !important; border-color: #e9dfbd !important; }
+    .input-karakter input { background-color: rgba(243, 211, 95, 0.3) !important; border-color: #f3d35f !important; }
+    .input-sosyal input { background-color: rgba(233, 192, 159, 0.3) !important; border-color: #e9c09f !important; }
+    .input-statu input { background-color: rgba(211, 154, 213, 0.3) !important; border-color: #d39ad5 !important; }
+    .input-degerler input { background-color: rgba(191, 200, 216, 0.3) !important; border-color: #bfc8d8 !important; }
+    .input-kimya input { background-color: rgba(198, 198, 200, 0.3) !important; border-color: #c6c6c8 !important; }
+    .input-yasam input { background-color: rgba(165, 201, 141, 0.3) !important; border-color: #a5c98d !important; }
+    
+    .input-item-label {
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -123,15 +137,8 @@ st.markdown("<div class='main-title'>💕 İlişki Ölçeği 💕</div>", unsafe
 if "scores" not in st.session_state:
     st.session_state.scores = {category: {} for category in CATEGORY_DATA}
 
-if st.button("🔄 Formu Sıfırla", type="secondary", use_container_width=True):
-    for category, items in CATEGORY_DATA.items():
-        st.session_state.scores[category] = {}
-        for item, _ in items:
-            st.session_state[f"{category}_{item}"] = 0
-    st.rerun()
-
-# Create columns for layout
-col1, col2 = st.columns(2)
+# Create columns for categories
+columns = st.columns(7, gap="small")
 
 def render_category(category, col):
     """Render a category with styling"""
@@ -153,55 +160,36 @@ def render_category(category, col):
             )
             st.session_state.scores[category][item] = score
 
-with col1:
-    categories_left = ["FİZİKSEL", "DEĞERLER", "STATÜ", "YAŞAM TARZI"]
-    for category in categories_left:
-        render_category(category, col1)
-
-with col2:
-    categories_right = ["KARAKTER", "SOSYAL", "KİMYA"]
-    for category in categories_right:
-        render_category(category, col2)
+# Render each category in its own column
+all_categories = list(CATEGORY_DATA.keys())
+for idx, category in enumerate(all_categories):
+    render_category(category, columns[idx])
 
 # Calculate totals
 st.markdown("---")
 
 total_score = 0
 total_max = 0
+category_results = []
 
-# Category scores
-col1, col2 = st.columns(2)
-all_categories = list(CATEGORY_DATA.keys())
+# Calculate all categories
+for category in all_categories:
+    items = CATEGORY_DATA[category]
+    cat_score = sum(st.session_state.scores[category].get(item, 0) for item, _ in items)
+    cat_max = sum(max_score for _, max_score in items)
+    total_score += cat_score
+    total_max += cat_max
+    category_results.append((category, cat_score, cat_max))
 
-with col1:
-    st.markdown("### 📊 Kategori Puanları")
-    for category in all_categories[:4]:
-        items = CATEGORY_DATA[category]
-        cat_score = sum(st.session_state.scores[category].get(item, 0) for item, _ in items)
-        cat_max = sum(max_score for _, max_score in items)
-        total_score += cat_score
-        total_max += cat_max
-        
-        color = CATEGORY_COLORS[category]
+# Display category scores
+cols = st.columns(7, gap="small")
+for idx, (category, cat_score, cat_max) in enumerate(category_results):
+    color = CATEGORY_COLORS[category]
+    with cols[idx]:
         st.markdown(f"""
-            <div style='background-color: {color}; padding: 10px; border-radius: 5px; margin: 8px 0;'>
-                <strong>{category}</strong>: {cat_score}/{cat_max}
-            </div>
-        """, unsafe_allow_html=True)
-
-with col2:
-    st.markdown("### 📊 Kategori Puanları")
-    for category in all_categories[4:]:
-        items = CATEGORY_DATA[category]
-        cat_score = sum(st.session_state.scores[category].get(item, 0) for item, _ in items)
-        cat_max = sum(max_score for _, max_score in items)
-        total_score += cat_score
-        total_max += cat_max
-        
-        color = CATEGORY_COLORS[category]
-        st.markdown(f"""
-            <div style='background-color: {color}; padding: 10px; border-radius: 5px; margin: 8px 0;'>
-                <strong>{category}</strong>: {cat_score}/{cat_max}
+            <div style='background-color: {color}; padding: 10px; border-radius: 5px; text-align: center;'>
+                <strong style='font-size: 12px;'>{category}</strong><br>
+                <span style='font-size: 16px; font-weight: bold;'>{cat_score}/{cat_max}</span>
             </div>
         """, unsafe_allow_html=True)
 
@@ -213,3 +201,12 @@ st.markdown(f"""
         <p style='color: #666; margin: 0;'>Uyum Yüzdesi: <strong style='color: #FF1744; font-size: 24px;'>{round((total_score/total_max*100) if total_max > 0 else 0, 1)}%</strong></p>
     </div>
 """, unsafe_allow_html=True)
+
+# Reset button at the bottom
+st.markdown("---")
+if st.button("🔄 Formu Sıfırla", type="secondary", use_container_width=True):
+    for category, items in CATEGORY_DATA.items():
+        st.session_state.scores[category] = {}
+        for item, _ in items:
+            st.session_state[f"{category}_{item}"] = 0
+    st.rerun()
