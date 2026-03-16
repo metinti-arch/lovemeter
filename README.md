@@ -1,0 +1,2 @@
+# lovemeter
+partner kriterleri
