@@ -54,6 +54,14 @@ st.markdown("""
         margin: 30px 0;
         text-align: center;
     }
+    
+    .score-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        font-size: 16px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -115,6 +123,16 @@ st.markdown("<div class='main-title'>💕 İlişki Ölçeği 💕</div>", unsafe
 if "scores" not in st.session_state:
     st.session_state.scores = {category: {} for category in CATEGORY_DATA}
 
+if st.button("🔄 Formu Sıfırla", type="secondary", use_container_width=True):
+    for category, items in CATEGORY_DATA.items():
+        st.session_state.scores[category] = {}
+        for item, _ in items:
+            st.session_state[f"{category}_{item}"] = 0
+    st.rerun()
+
+# Create columns for layout
+col1, col2 = st.columns(2)
+
 def render_category(category, col):
     """Render a category with styling"""
     class_name = CATEGORY_CLASS.get(category, "")
@@ -135,9 +153,6 @@ def render_category(category, col):
             )
             st.session_state.scores[category][item] = score
 
-# Create columns for layout
-col1, col2 = st.columns(2)
-
 with col1:
     categories_left = ["FİZİKSEL", "DEĞERLER", "STATÜ", "YAŞAM TARZI"]
     for category in categories_left:
@@ -150,6 +165,7 @@ with col2:
 
 # Calculate totals
 st.markdown("---")
+
 total_score = 0
 total_max = 0
 
@@ -171,7 +187,7 @@ with col1:
             <div style='background-color: {color}; padding: 10px; border-radius: 5px; margin: 8px 0;'>
                 <strong>{category}</strong>: {cat_score}/{cat_max}
             </div>
-        "", unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
 with col2:
     st.markdown("### 📊 Kategori Puanları")
@@ -187,7 +203,7 @@ with col2:
             <div style='background-color: {color}; padding: 10px; border-radius: 5px; margin: 8px 0;'>
                 <strong>{category}</strong>: {cat_score}/{cat_max}
             </div>
-        "", unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
 # Total score with special styling
 st.markdown(f"""
