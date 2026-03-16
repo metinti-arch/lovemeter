@@ -1,18 +1,10 @@
-import sys
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import (
-    QApplication,
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QGridLayout,
-    QLabel,
-    QSpinBox,
-    QSizePolicy,
-    QScrollArea,
-    QMessageBox,
-)
-from PyQt6.QtWidgets import QAbstractSpinBox
+import streamlit as st
+import pandas as pd
+
+st.set_page_config(page_title="İlişki Ölçeği")
+st.title("İlişki Ölçeği")
+
+# Your categories and scoring logic here
 
 COLUMN_ITEM_WIDTH = 350
 COLUMN_MAX_WIDTH = 70
