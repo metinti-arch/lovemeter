@@ -39,7 +39,7 @@ st.markdown("""
     
     .main-title {
         text-align: center;
-        font-size: 42px;
+        font-size: 64px;
         font-weight: bold;
         color: #FF1744;
         margin-bottom: 30px;
@@ -89,7 +89,7 @@ CATEGORY_DATA = {
     ],
     "KİMYA": [
         ("Ortak İlgi Alanları", 20), ("Beceri", 30), ("Arzu", 20),
-        ("Tutku", 30), ("Cinsel Uyum", 80),
+        ("Tutku", 30), ("Tensel Uyum", 80),
     ],
     "YAŞAM TARZI": [
         ("Hayvanseverlik", 20), ("Disiplin", 20), ("Düzen", 15), ("Temizlik", 15),
